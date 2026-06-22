@@ -96,8 +96,8 @@
       'where-to-buy.html':                   'blog.html',
       'farmers-guideline.html':              'blog.html',
       'blog-conference.html':                'blog.html',
-      'fans-purification.html':              'blog.html',
-      'lighting-bulbs.html':                 'blog.html',
+      'blueberry-humic-acid.html':           'blog.html',
+      'equipment-upgrade.html':              'blog.html',
       'supporting-sustainable-farming.html': 'blog.html'
     };
     var activeHref = navAliases[page] || page;

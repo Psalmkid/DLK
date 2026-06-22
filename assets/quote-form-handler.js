@@ -98,7 +98,7 @@
                 return;
             }
 
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function (e) { console.log('HANDLER FIRED for', form.className);
                 e.preventDefault();
 
                 if (form.dataset.quoteSending === '1') {
@@ -113,12 +113,33 @@
                 var fd = new FormData(form);
                 fd.append('access_key', ACCESS_KEY);
 
+                // IMPORTANT: from_name must reflect the actual submitter,
+                // not a fixed string. A literal constant sent identically
+                // on every submission is exactly the kind of repeated,
+                // non-varying payload spam filters key on — this was
+                // previously hardcoded to "DLK Fertilizer Website" on
+                // every single request, which is the most likely reason
+                // every submission was being flagged as spam.
+                var nameField = form.querySelector('input[name="name"]');
+                var emailField = form.querySelector('input[name="email"]');
+                var submitterName = (nameField && nameField.value.trim())
+                    || (emailField && emailField.value.trim())
+                    || 'Website Visitor';
+                fd.set('from_name', submitterName);
+
                 // Helpful context fields Web3Forms will include in the
                 // notification email — which page/button this came from,
                 // since several pages share similar form shapes.
+                // IMPORTANT: use set(), not append() — contact.html has
+                // its own real "subject" input field, so FormData(form)
+                // already captured the visitor's typed subject. Using
+                // append() here was creating a SECOND, conflicting
+                // "subject" entry in the same payload on every contact.html
+                // submission, which is exactly the kind of malformed/
+                // duplicate field a spam filter flags.
                 var btnLabel = submitBtn.value || submitBtn.textContent || '';
-                fd.append('subject', (btnLabel.trim() || 'Website Enquiry') + ' — ' + document.title);
-                fd.append('from_name', 'DLK Fertilizer Website');
+                var existingSubject = (form.querySelector('input[name="subject"], textarea[name="subject"]') || {}).value;
+                fd.set('subject', (existingSubject && existingSubject.trim()) || (btnLabel.trim() || 'Website Enquiry') + ' — ' + document.title);
                 fd.append('page_url', window.location.href);
 
                 form.dataset.quoteSending = '1';

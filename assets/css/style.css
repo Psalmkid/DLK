@@ -655,7 +655,7 @@ body.popup-open { overflow: hidden; }
   }
   .h-in-touch-wrapper .bg::after {
     content: ''; position: absolute; inset: 0;
-    background: rgba(156, 175, 164, 0.603);
+    background: rgba(149, 172, 159, 0.75);
   }
   .h-in-touch-wrapper .bg img { display: none; }
   .h-in-touch-wrapper .container { position: relative; z-index: 1; }
